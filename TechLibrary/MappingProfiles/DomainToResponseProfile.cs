@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using TechLibrary.Domain;
 using TechLibrary.Models;
 
@@ -8,7 +9,11 @@ namespace TechLibrary.MappingProfiles
     {
         public DomainToResponseProfile()
         {
-            CreateMap<Book, BookResponse>().ForMember(x => x.Descr, opt => opt.MapFrom(src => src.ShortDescr));
+            CreateMap<Book, BookResponse>()
+                .ForMember(x => x.Descr, opt => opt.MapFrom(src => src.ShortDescr));
+
+            CreateMap<SearchResponse<Book>, SearchResponse<BookResponse>>()
+                .ForMember(x => x.Items, opt => opt.MapFrom(src => src.Items));
         }
     }
 }

@@ -47,5 +47,17 @@ namespace TechLibrary.Controllers
 
             return Ok(bookResponse);
         }
+
+        [HttpPost("search")]
+        public async Task<IActionResult> SearchBooks([FromBody] SearchRequest bookReq)
+        {
+            _logger.LogInformation($"Searching books (Term: \"{bookReq.Text}\", Page: {bookReq.Page}, Page Size: {bookReq.ItemsPerPage})");
+
+            var bookServiceResp = await _bookService.SearchBooksAsync(bookReq);
+
+            var response = _mapper.Map<SearchResponse<BookResponse>>(bookServiceResp);
+
+            return Ok(response);
+        }
     }
 }
