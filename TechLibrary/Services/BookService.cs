@@ -14,6 +14,7 @@ namespace TechLibrary.Services
         Task<List<Book>> GetBooksAsync();
         Task<Book> GetBookByIdAsync(int bookid);
         Task<SearchResponse<Book>> SearchBooksAsync(SearchRequest req);
+        Task<Book> UpdateBookAsync(Book book);
     }
 
     public class BookService : IBookService
@@ -42,6 +43,7 @@ namespace TechLibrary.Services
             // Default query for all books
             var baseQuery = _dataContext
                 .Books
+                .AsNoTracking()
                 .AsQueryable();
 
             // If text given, filter against text value
@@ -81,6 +83,22 @@ namespace TechLibrary.Services
                 TotalItems = totalItems,
                 TotalPages = (int)Math.Ceiling((double)totalItems / Math.Max(req.ItemsPerPage, 1))
             };
+        }
+
+        public virtual async Task<Book> UpdateBookAsync(Book book)
+        {
+            var dbBook = await _dataContext
+                .Books
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.BookId == book.BookId);
+
+            if (dbBook is null)
+                throw new NotSupportedException($"Book with id \"{book.BookId}\" not found");
+
+            _dataContext.Books.Update(book);
+            _dataContext.SaveChanges();
+
+            return book;
         }
     }
 }

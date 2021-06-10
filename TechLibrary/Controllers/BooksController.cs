@@ -48,6 +48,19 @@ namespace TechLibrary.Controllers
             return Ok(bookResponse);
         }
 
+        [HttpPost("{id}")]
+        public async Task<IActionResult> UpdateById(int id, [FromBody] BookResponse book)
+        {
+            _logger.LogInformation($"Update book by id {id}");
+            book.BookId = id;
+
+            var bookDomain = _mapper.Map<Book>(book);
+            var updatedBook = await _bookService.UpdateBookAsync(bookDomain);
+
+            var bookContract = _mapper.Map<BookResponse>(updatedBook);
+            return Ok(bookContract);
+        }
+
         [HttpPost("search")]
         public async Task<IActionResult> SearchBooks([FromBody] SearchRequest bookReq)
         {
