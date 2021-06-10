@@ -9,7 +9,8 @@
                 <b-input-group>
                     <b-form-input
                         v-model="text"
-                        placeholder="Search Text" />
+                        placeholder="Search Text"
+                        @keyup.enter="manualSearch" />
                     <b-input-group-append>
                         <b-button
                             v-if="text"
